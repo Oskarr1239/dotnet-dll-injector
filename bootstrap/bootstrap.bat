@@ -1,3 +1,4 @@
-set include=%fasm_home%include\
-%fasm_home%\fasm.exe "%~dp0\bootstrap32.asm"
-%fasm_home%\fasm.exe "%~dp0\bootstrap64.asm"
+@echo off
+set include=%FASM_HOME%\include\
+%FASM_HOME%\fasm.exe "%~dp0bootstrap32.asm"
+%FASM_HOME%\fasm.exe "%~dp0bootstrap64.asm"

@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("Native DLL Injector")]
-[assembly: AssemblyDescription("Inject .NET DLL into remote process")]
+[assembly: AssemblyTitle("TestProcess")]
+[assembly: AssemblyDescription("Kills all dwarfs and dragons on your hard disk")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Druzgocące Krasnale z Elbonii")]
-[assembly: AssemblyProduct("Native DLL Injector")]
-[assembly: AssemblyCopyright("Copyright © 2012")]
+[assembly: AssemblyCompany("Karmazynowe Wielkoludy")]
+[assembly: AssemblyProduct("TestProcess")]
+[assembly: AssemblyCopyright("Copyright © Karmazynowe Wielkoludy 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("5c66fb99-189d-4b73-ad10-4be5da1f0815")]
+[assembly: Guid("f58b8921-f9fe-4bb8-ab0d-34b04d3b1f47")]
 
 // Version information for an assembly consists of the following four values:
 //

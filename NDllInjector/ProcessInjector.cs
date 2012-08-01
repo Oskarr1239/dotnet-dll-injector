@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -46,11 +45,10 @@ namespace NDllInjector
                 throw new Exception("Cann't open process.");
             }
 
-            TOKEN_PRIVILEGES tp = new TOKEN_PRIVILEGES
-                                      {
-                                          PrivilegeCount = 1,
-                                          Attributes = SE_NAMES.SE_PRIVILEGE_ENABLED
-                                      };
+            TOKEN_PRIVILEGES tp = new TOKEN_PRIVILEGES {
+                PrivilegeCount = 1,
+                Attributes = SE_NAMES.SE_PRIVILEGE_ENABLED
+            };
             
             if (!UnsafeFunctions.LookupPrivilegeValue(null, SE_NAMES.SE_DEBUG_NAME, out tp.Luid))
             {
@@ -75,33 +73,33 @@ namespace NDllInjector
             UnsafeFunctions.CloseHandle(hToken);
         }
 
-        private ProcessModule GetKernel32Module( Process process )
-        {
-            var kernel32 = process.Modules.Cast<ProcessModule>().FirstOrDefault(pm => pm.ModuleName.ToLower() == "kernel32.dll");
-            if (kernel32 == null)
-            {
-                throw new Exception(string.Format("kernel32.dll not present in process with pid = {0}", process.Id));
+        private ProcessModule GetKernel32Module(Process process) {
+
+            ProcessModuleCollection processes = process.Modules;
+            for (int i = 0; i < processes.Count; i++) {
+                if (processes[i].ModuleName.ToLower() == "kernel32.dll") {
+                    return processes[i];
+                }
             }
-            return kernel32;
+
+            throw new Exception(string.Format("kernel32.dll not present in process with pid = {0}", process.Id));
         }
 
-        private IntPtr GetFunctionAddress( ProcessModule remoteKernel32, string name )
-        {
+        private IntPtr GetFunctionAddress( ProcessModule remoteKernel32, string name ) {
+            
             Process process = Process.GetCurrentProcess();
             ProcessModule kernel32 = GetKernel32Module(process);
-
             IntPtr proc = UnsafeFunctions.GetProcAddress(kernel32.BaseAddress, name);
 
-            if (IntPtr.Zero == proc)
-            {
+            if (IntPtr.Zero == proc) {
                 throw new Exception("Cann't get process address.");
             }
 
             return new IntPtr(remoteKernel32.BaseAddress.ToInt64() + (proc.ToInt64() - kernel32.BaseAddress.ToInt64()));
         }
 
-        public int Inject( int pid, string bootstrapPath, string runtimeVersion, string injecteePath, string injecteeClass, string injecteeFunc )
-        {
+        public int Inject( int pid, string bootstrapPath, string runtimeVersion, string injecteePath, string injecteeClass, string injecteeFunc) {
+            
             adjustDebugPriv(Process.GetCurrentProcess().Id);
 
             ProcessModule remoteKernel32 = GetKernel32Module(Process.GetProcessById(pid));
@@ -110,12 +108,15 @@ namespace NDllInjector
             IntPtr getProcAddressAddress = GetFunctionAddress(remoteKernel32, "GetProcAddress");
 
             IntPtr hProcess = UnsafeFunctions.OpenProcess(
-                ProcessAccessFlags.CreateThread | ProcessAccessFlags.VMWrite | ProcessAccessFlags.VMOperation
-                | ProcessAccessFlags.VMRead | ProcessAccessFlags.QueryInformation,
-                false, pid);
+                ProcessAccessFlags.CreateThread |
+                ProcessAccessFlags.VMWrite | 
+                ProcessAccessFlags.VMOperation | 
+                ProcessAccessFlags.VMRead | 
+                ProcessAccessFlags.QueryInformation,
+                false, pid
+            );
             
-            if (IntPtr.Zero == hProcess)
-            {
+            if (IntPtr.Zero == hProcess) {
                 throw new Exception("Cann't open process.");
             }
 
@@ -123,17 +124,21 @@ namespace NDllInjector
 
             byte[] bootstrap = File.ReadAllBytes(bootstrapPath);
 
-            List<byte[]> param = new List<byte[]>(6)
-                                     {
-                                         Encoding.Unicode.GetBytes(runtimeVersion + "\0"),
-                                         Encoding.Unicode.GetBytes(injecteePath + "\0"),
-                                         Encoding.Unicode.GetBytes(injecteeClass + "\0"),
-                                         Encoding.Unicode.GetBytes(injecteeFunc + "\0")
-                                     };
+            List<byte[]> param = new List<byte[]>(6) {
+                Encoding.Unicode.GetBytes(runtimeVersion + "\0"),
+                Encoding.Unicode.GetBytes(injecteePath + "\0"),
+                Encoding.Unicode.GetBytes(injecteeClass + "\0"),
+                Encoding.Unicode.GetBytes(injecteeFunc + "\0")
+            };
 
-            int totalSize = bootstrap.Length                            // code
-                + (param.Count + 2) * (is64BitTargetProcess ? 8 : 4)    // addresses of params
-                + param.Sum(p => p.Length);                             // params
+            int sum = 0;
+            for (int i = 0; i < param.Count; i++) {
+                sum += param[i].Length;
+            }
+
+            int totalSize = bootstrap.Length                          // code
+                + (param.Count + 2) * (is64BitTargetProcess ? 8 : 4)  // addresses of params
+                + sum;                                                // params
 
             IntPtr memory = UnsafeFunctions.VirtualAllocEx(hProcess, IntPtr.Zero, (uint) totalSize, AllocationType.Commit, MemoryProtection.ExecuteReadWrite);
 
