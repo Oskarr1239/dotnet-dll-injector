@@ -58,7 +58,7 @@ namespace NDllInjector {
         private static void PrintUsage() {
             String name = System.AppDomain.CurrentDomain.FriendlyName.Split(new char[] { '.' })[0];
             Console.WriteLine("Usage: " + name + " [pid] [runtime] [dllpath] [class] [function]");
-            Console.WriteLine("  [pid]      - process ID");
+            Console.WriteLine("  [procname] - process name");
             Console.WriteLine("  [runtime]  - framework runtime version");
             Console.WriteLine("  [dllpath]  - path to injectee DLL file");
             Console.WriteLine("  [class]    - injectee class name togehter with namespace");
