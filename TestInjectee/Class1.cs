@@ -5,9 +5,11 @@ using System.Text;
 using System.Windows.Forms;
 
 namespace TestInjectee {
-    public static class Program {
-        public static void Main() {
-            MessageBox.Show("Secret value is " + TestProcess.Program.SecretValue);
+    class Program {
+        public static int Main(string arg) {
+            Console.WriteLine("bubu");
+            MessageBox.Show("Hello World from Injectee!");
+            return 0;
         }
     }
 }
