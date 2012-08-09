@@ -4,7 +4,7 @@
 	
 	<groupId>com.github.sarxos</groupId>
 	<artifactId>dotnet-dll-injector</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.1</version>
 	<packaging>netpack</packaging>
 	
 	<name>Managed .NET DLL Injector</name>
@@ -17,6 +17,20 @@
 		<dotnet.target.path>${project.build.directory}/dotnetbin</dotnet.target.path>
 		<fasm.target.path>${project.build.directory}/bootstraps</fasm.target.path>
 	</properties>
+
+	<distributionManagement>
+		<repository>
+			<id>sarxos-ftp-repo</id>
+			<url>ftp://ftp.sarxos.pl/maven2</url>
+		</repository>
+	</distributionManagement>
+
+	<repositories>
+		<repository>
+			<id>sarxos-repo</id>
+			<url>http://repo.sarxos.pl/maven2</url>
+		</repository>
+	</repositories>
 
 	<build>
 		<pluginManagement>
@@ -78,7 +92,6 @@
 					<outputDirectory>${fasm.target.path}</outputDirectory>
 				</configuration>
 			</plugin>
-
 			<plugin>
 				<groupId>org.codehaus.sonar-plugins.dotnet</groupId>
 				<artifactId>maven-dotnet-plugin</artifactId>
@@ -95,7 +108,7 @@
 				</executions>
 				<configuration>
 					<solutionName>dotnet-dll-injector.sln</solutionName>
-					<outputDirectory>${project.build.directory}/dotnetbin</outputDirectory>
+					<outputDirectory>${dotnet.target.path}</outputDirectory>
 					<platforms>Mixed Platforms</platforms>
 					<buildConfigurations>Debug</buildConfigurations>
 					<parameters>
@@ -103,7 +116,6 @@
 					</parameters>
 				</configuration>
 			</plugin>
-			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
@@ -123,8 +135,6 @@
 					</execution>
 				</executions>
 			</plugin>			
-
-			<!--
 			<plugin>
 				<groupId>com.github.danielflower.mavenplugins</groupId>
 				<artifactId>maven-gitlog-plugin</artifactId>
@@ -134,12 +144,26 @@
 						<goals>
 							<goal>generate</goal>
 						</goals>
+						<phase>process-resources</phase>
 					</execution>
 				</executions>
+				<configuration>
+					<generatePlainTextChangeLog>false</generatePlainTextChangeLog>
+					<generateSimpleHTMLChangeLog>true</generateSimpleHTMLChangeLog>
+					<simpleHTMLChangeLogFilename>CHANGELOG.htm</simpleHTMLChangeLogFilename>
+					<generateHTMLTableOnlyChangeLog>false</generateHTMLTableOnlyChangeLog>
+				</configuration>
 			</plugin>
-			-->
-			
 		</plugins>
+
+		<extensions>
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ftp</artifactId>
+				<version>1.0-beta-7</version>
+			</extension>
+		</extensions>
+		
 	</build>
 	
 </project>

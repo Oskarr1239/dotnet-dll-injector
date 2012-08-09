@@ -7,8 +7,9 @@ used interface marked as obsolete from 4.0 and later.
 
 This project is based on original [NDLLInjector](https://github.com/fday/NDllInjector) by 
 [fday](https://github.com/fday). The only difference is that the one you are currently looking on can
-be build with Maven and for it's original version Visual Studio is required. The current one can
-be also run with .NET framework 2.0 version only installed.
+be build with Maven. It can be also run with only .NET framework 2.0 version installed.
+
+You can download precompiled binaries [here](http://repo.sarxos.pl/maven2/com/github/sarxos/dotnet-dll-injector/0.1/dotnet-dll-injector-0.1-dist.zip). 
 
 ## Maven Build
 
@@ -20,8 +21,6 @@ In your settings.xml create profile with parameters required by _maven-dotnet-pl
 		<id>dotnet</id>
 		<properties>
 			<dotnet.2.0.sdk.directory>C:/WINNT/Microsoft.NET/Framework/v2.0.50727</dotnet.2.0.sdk.directory> 
-			<dotnet.3.5.sdk.directory>C:/WINNT/Microsoft.NET/Framework/v3.5</dotnet.3.5.sdk.directory> 
-			<dotnet.4.0.sdk.directory>C:/WINNT/Microsoft.NET/Framework/v4.0.30319</dotnet.4.0.sdk.directory> 
 		</properties>
 	</profile>
 </profiles>
@@ -89,5 +88,5 @@ Please note that injectee function signature must be:
 public static int [function name](string arg)
 ```
 
-
-
+Its also important to note that your DLL framework version should be compatible with the target process version. 
+For example you cannot inject .NET 4.0 based DLL into 2.0 process.
