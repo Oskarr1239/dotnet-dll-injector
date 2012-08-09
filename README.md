@@ -5,8 +5,9 @@ Tool for injecting managed .NET DLL libraries in native process (or not native w
 Support both x86 and x64. Tested on v2.0.50727 and v4.0.30319 runtimes. For loading runtime was 
 used interface marked as obsolete from 4.0 and later.
 
-**This project is based on original [NDLLInjector](https://github.com/fday/NDllInjector) by 
-[fday](https://github.com/fday).** The only difference is that the one you are currently looking on can
+**This project is based on original [NDLLInjector](https://github.com/fday/NDllInjector) by [fday](https://github.com/fday).** 
+
+The only difference is that the one you are currently looking on can
 be build with Maven. It can be also run with only .NET framework 2.0 version installed.
 
 You can download precompiled binaries [here](http://repo.sarxos.pl/maven2/com/github/sarxos/dotnet-dll-injector/0.1/dotnet-dll-injector-0.1-dist.zip). 
@@ -26,7 +27,7 @@ In your ```settings.xml``` create profile with parameters required by _maven-dot
 </profiles>
 ```
 
-Paths on your computer *can be different* - check them carefully!!!
+Paths on your computer **can be different** - check them carefully!!!
 
 Sonar _maven-dotnet-plugin_ is not able to take parameters for MSBuild, so you have to change all ```*.csproj```
 files from the project top reflect correct path to .NET framework home directory. I've already created ticket 
