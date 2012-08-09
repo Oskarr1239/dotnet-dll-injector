@@ -5,7 +5,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace NDllInjector
+namespace NDLLInjector
 {
     public class ProcessInjector
     {
@@ -45,13 +45,11 @@ namespace NDllInjector
                 throw new Exception("Cann't open process.");
             }
 
-            TOKEN_PRIVILEGES tp = new TOKEN_PRIVILEGES {
-                PrivilegeCount = 1,
-                Attributes = SE_NAMES.SE_PRIVILEGE_ENABLED
-            };
+            TOKEN_PRIVILEGES tp = new TOKEN_PRIVILEGES();
+            tp.PrivilegeCount = 1;
+            tp.Attributes = SE_NAMES.SE_PRIVILEGE_ENABLED;
             
-            if (!UnsafeFunctions.LookupPrivilegeValue(null, SE_NAMES.SE_DEBUG_NAME, out tp.Luid))
-            {
+            if (!UnsafeFunctions.LookupPrivilegeValue(null, SE_NAMES.SE_DEBUG_NAME, out tp.Luid)) {
                 UnsafeFunctions.CloseHandle(hProcess);
                 throw new Exception("Cann't lookup value");                
             }
@@ -124,12 +122,11 @@ namespace NDllInjector
 
             byte[] bootstrap = File.ReadAllBytes(bootstrapPath);
 
-            List<byte[]> param = new List<byte[]>(6) {
-                Encoding.Unicode.GetBytes(runtimeVersion + "\0"),
-                Encoding.Unicode.GetBytes(injecteePath + "\0"),
-                Encoding.Unicode.GetBytes(injecteeClass + "\0"),
-                Encoding.Unicode.GetBytes(injecteeFunc + "\0")
-            };
+            List<byte[]> param = new List<byte[]>();
+            param.Add(Encoding.Unicode.GetBytes(runtimeVersion + "\0"));
+            param.Add(Encoding.Unicode.GetBytes(injecteePath + "\0"));
+            param.Add(Encoding.Unicode.GetBytes(injecteeClass + "\0"));
+            param.Add(Encoding.Unicode.GetBytes(injecteeFunc + "\0"));
 
             int sum = 0;
             for (int i = 0; i < param.Count; i++) {
@@ -184,16 +181,14 @@ namespace NDllInjector
             Array.Copy(bootstrap, 0, injectedData, 0, bootstrap.Length);
             int position = bootstrap.Length;
 
-            foreach (var p in param)
-            {
+            foreach (byte[] p in param) {
                 Array.Copy(p, 0, injectedData, position, p.Length);
                 position += p.Length;
             }
 
             UIntPtr written;
 
-            if (!UnsafeFunctions.WriteProcessMemory(hProcess, memory, injectedData, (uint) injectedData.Length, out written) || injectedData.Length != written.ToUInt32())
-            {
+            if (!UnsafeFunctions.WriteProcessMemory(hProcess, memory, injectedData, (uint) injectedData.Length, out written) || injectedData.Length != written.ToUInt32()) {
                 UnsafeFunctions.CloseHandle(hProcess);
                 throw new Exception("Cann't write memory.");
             }

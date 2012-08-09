@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 
-namespace NDllInjector
+namespace NDLLInjector
 {
     public static class UnsafeFunctions
     {

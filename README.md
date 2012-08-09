@@ -1,18 +1,93 @@
-NDllInjector
+dotnet-dll-injector
 ============
-Tool for injecting .net library in native process (or not native with some limitations). Support both x86 and x64. Tested on v2.0.50727 and v4.0.30319 runtimes. For loading runtime was used interface marked as obsolete from 4.0 and later.
 
-How to build
-------------
-- Set environment variable %fasm_home% to path to fasm home dir (use latest version from [http://flatassembler.net/](http://flatassembler.net/ "http://flatassembler.net/"))
-- Build with VS 2010 or later.
+Tool for injecting managed .NET DLL libraries in native process (or not native with some limitations). 
+Support both x86 and x64. Tested on v2.0.50727 and v4.0.30319 runtimes. For loading runtime was 
+used interface marked as obsolete from 4.0 and later.
 
-Usage
-----------
-`ndllinjector <pid> <runtime version> <dll path> <class name> <function name>`
+This project is based on original [NDLLInjector](https://github.com/fday/NDllInjector) by 
+[fday](https://github.com/fday). The only difference is that the one you are currently looking on can
+be build with Maven and for it's original version Visual Studio is required. The current one can
+be also run with .NET framework 2.0 version only installed.
 
-- pid - process id
-- runtime version - version of .net runtime that will be loaded in process
-- dll path - full path of dll to inject
-- class name - full class name with namespace
-- function name - function name with signature: `public static int <function name>(string arg)`
+## Maven Build
+
+In your settings.xml create profile with parameters required by _maven-dotnet-plugin_:
+
+```xml
+<profiles>
+	<profile>
+		<id>dotnet</id>
+		<properties>
+			<dotnet.2.0.sdk.directory>C:/WINNT/Microsoft.NET/Framework/v2.0.50727</dotnet.2.0.sdk.directory> 
+			<dotnet.3.5.sdk.directory>C:/WINNT/Microsoft.NET/Framework/v3.5</dotnet.3.5.sdk.directory> 
+			<dotnet.4.0.sdk.directory>C:/WINNT/Microsoft.NET/Framework/v4.0.30319</dotnet.4.0.sdk.directory> 
+		</properties>
+	</profile>
+</profiles>
+```
+
+Paths on your computer *can be different* - check them carefully!!!
+
+Sonar _maven-dotnet-plugin_ is not able to take parameters for MSBuild, so you have to change all ```*.csproj```
+files from the project top reflect correct path to .NET framework home directory. I've already created ticket 
+for this problem in Sonar JIRA - [SONARPLUGINS-2133](http://jira.codehaus.org/browse/SONARPLUGINS-2133).
+
+Find this line and align path:
+
+```xml
+<Import Project="C:/WINNT/Microsoft.NET/Framework/v2.0.50727\Microsoft.CSharp.targets" />
+```
+
+Download flat assembler ([flatassembler.net](http://flatassembler.net)), extract it wherever you want, and set
+```FASM_HOME``` environment variable to point this location.
+
+At the end, to build whole project, simply run this command:
+
+```
+mvn clean install -P dotnet
+```
+
+In the target directory you will find ```zip``` file containing all required binaries.
+
+
+## Usage
+
+```
+Usage: injectdll [procname] [runtime] [dllpath] [class] [function]
+  [procname] - process name
+  [runtime]  - framework runtime version
+  [dllpath]  - path to injectee DLL file
+  [class]    - injectee class name togehter with namespace (e.g. Test.Program)
+  [function] - injectee function to run (e.g. Main)
+```
+
+For example:
+
+```
+injectdll testprocess v2.0.50727 c:\somedir\my.dll Test.Program Main
+```
+
+For the above example you will have to have such code compiled to DLL:
+
+```cs
+namespace Test {
+    class Program {
+        public static int Main(string arg) {
+            MessageBox.Show("Hello World from Injectee!");
+            return 0;
+        }
+    }
+}
+```
+
+It will be injected into process executed from ```testprocess.exe```.
+
+Please note that injectee function signature must be:
+
+```cs
+public static int [function name](string arg)
+```
+
+
+

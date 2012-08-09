@@ -1,0 +1,145 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	
+	<modelVersion>4.0.0</modelVersion>
+	
+	<groupId>com.github.sarxos</groupId>
+	<artifactId>dotnet-dll-injector</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<packaging>netpack</packaging>
+	
+	<name>Managed .NET DLL Injector</name>
+	<description>Utility allowing you to inject managed DLL into .NET process.</description>
+	
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<dotnet.tool.version>2.0</dotnet.tool.version>
+		<sonar.language>cs</sonar.language>
+		<dotnet.target.path>${project.build.directory}/dotnetbin</dotnet.target.path>
+		<fasm.target.path>${project.build.directory}/bootstraps</fasm.target.path>
+	</properties>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>com.github.sarxos</groupId>
+										<artifactId>fasm-compiler-plugin</artifactId>
+										<versionRange>[0.1,)</versionRange>
+										<goals>
+											<goal>compile</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<execute />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.sonar-plugins.dotnet</groupId>
+										<artifactId>maven-dotnet-plugin</artifactId>
+										<versionRange>[1.2,)</versionRange>
+										<goals>
+											<goal>compile</goal>
+											<goal>unpack</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+		<plugins>
+			<plugin>
+				<groupId>com.github.sarxos</groupId>
+				<artifactId>fasm-compiler-plugin</artifactId>
+				<version>0.1</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<outputDirectory>${fasm.target.path}</outputDirectory>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.sonar-plugins.dotnet</groupId>
+				<artifactId>maven-dotnet-plugin</artifactId>
+				<version>1.2</version>
+				<extensions>true</extensions>
+				<executions>
+					<execution>
+						<goals>
+							<goal>clean</goal>
+							<goal>compile</goal>
+							<goal>msbuild</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<solutionName>dotnet-dll-injector.sln</solutionName>
+					<outputDirectory>${project.build.directory}/dotnetbin</outputDirectory>
+					<platforms>Mixed Platforms</platforms>
+					<buildConfigurations>Debug</buildConfigurations>
+					<parameters>
+						<parameter>/p:MSBuildToolsPath="${dotnet.2.0.sdk.directory}"</parameter>
+					</parameters>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<version>2.3</version>
+				<configuration>
+					<descriptors>
+						<descriptor>src/main/assembly/distribution.xml</descriptor>
+					</descriptors>
+				</configuration>
+				<executions>
+					<execution>
+						<id>make-assembly</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>			
+
+			<!--
+			<plugin>
+				<groupId>com.github.danielflower.mavenplugins</groupId>
+				<artifactId>maven-gitlog-plugin</artifactId>
+				<version>1.4.11</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generate</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			-->
+			
+		</plugins>
+	</build>
+	
+</project>

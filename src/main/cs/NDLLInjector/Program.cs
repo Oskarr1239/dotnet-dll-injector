@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-namespace NDllInjector {
+namespace NDLLInjector {
 
     class Program {
 
@@ -15,18 +15,14 @@ namespace NDllInjector {
                 Environment.Exit(-1);
             }
 
-            Process[] processes = Process.GetProcessesByName(args[0]);
+            String procName = args[0];
+            Process[] processes = Process.GetProcessesByName(procName);
             if (processes.Length == 0) {
-                Console.WriteLine("No processes with name " + args[0]);
+                Console.WriteLine("No processes with name " + procName);
                 return;
             }
 
-            Console.WriteLine("Modules:");
             Process process = processes[0];
-            for (int i = 0; i < process.Modules.Count; i++) {
-                Console.WriteLine("  " + process.Modules[i].FileName);
-            }
-
 
             int pid = process.Id;
             bool is64BitCurrentProcess = ProcessInjector.Is64BitProcess(Process.GetCurrentProcess().Id);
@@ -36,11 +32,11 @@ namespace NDllInjector {
 
                 StringBuilder sb = new StringBuilder(1024);
 
-                foreach(var arg in Concat(Process.GetCurrentProcess().MainModule.FileName, args)) {
+                foreach(string arg in Concat(Process.GetCurrentProcess().MainModule.FileName, args)) {
                     sb.AppendFormat(arg.Contains(" ") ? "\"{0}\" " : "{0} ", arg);
                 }
 
-                Process proc = Process.Start(Path.Combine(Directory.GetCurrentDirectory(), "X86Runner.exe"),  sb.ToString());
+                Process proc = Process.Start(Path.Combine(Directory.GetCurrentDirectory(), "x86runner.exe"), sb.ToString());
                 proc.WaitForExit();
                 Environment.ExitCode = proc.ExitCode;
             } else {
@@ -61,13 +57,13 @@ namespace NDllInjector {
             Console.WriteLine("  [procname] - process name");
             Console.WriteLine("  [runtime]  - framework runtime version");
             Console.WriteLine("  [dllpath]  - path to injectee DLL file");
-            Console.WriteLine("  [class]    - injectee class name togehter with namespace");
-            Console.WriteLine("  [function] - injectee function signature to run");
+            Console.WriteLine("  [class]    - injectee class name togehter with namespace (e.g. Test.Program)");
+            Console.WriteLine("  [function] - injectee function to run (e.g. Main)");
         }
 
         private static IEnumerable<T> Concat<T>(T first, IEnumerable<T> other ) {
             yield return first;
-            foreach (var t in other) {
+            foreach (T t in other) {
                 yield return t;
             }
         } 
