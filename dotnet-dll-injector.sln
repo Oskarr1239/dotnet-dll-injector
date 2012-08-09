@@ -8,6 +8,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NDLLInjector", "src\main\cs
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "X86Runner", "src\main\cs\X86Runner\X86Runner.csproj", "{0B0109CB-D726-4937-95A1-15F30E294353}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FrameworkChecker", "src\main\cs\FrameworkChecker\FrameworkChecker.csproj", "{044761D8-CD9D-4FD1-B82C-27F96FB102EA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,20 @@ Global
 		{0B0109CB-D726-4937-95A1-15F30E294353}.Release|x64.ActiveCfg = Release|x86
 		{0B0109CB-D726-4937-95A1-15F30E294353}.Release|x86.ActiveCfg = Release|x86
 		{0B0109CB-D726-4937-95A1-15F30E294353}.Release|x86.Build.0 = Release|x86
+		{044761D8-CD9D-4FD1-B82C-27F96FB102EA}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{044761D8-CD9D-4FD1-B82C-27F96FB102EA}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{044761D8-CD9D-4FD1-B82C-27F96FB102EA}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{044761D8-CD9D-4FD1-B82C-27F96FB102EA}.Debug|Win32.ActiveCfg = Debug|x86
+		{044761D8-CD9D-4FD1-B82C-27F96FB102EA}.Debug|x64.ActiveCfg = Debug|x86
+		{044761D8-CD9D-4FD1-B82C-27F96FB102EA}.Debug|x86.ActiveCfg = Debug|x86
+		{044761D8-CD9D-4FD1-B82C-27F96FB102EA}.Debug|x86.Build.0 = Debug|x86
+		{044761D8-CD9D-4FD1-B82C-27F96FB102EA}.Release|Any CPU.ActiveCfg = Release|x86
+		{044761D8-CD9D-4FD1-B82C-27F96FB102EA}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{044761D8-CD9D-4FD1-B82C-27F96FB102EA}.Release|Mixed Platforms.Build.0 = Release|x86
+		{044761D8-CD9D-4FD1-B82C-27F96FB102EA}.Release|Win32.ActiveCfg = Release|x86
+		{044761D8-CD9D-4FD1-B82C-27F96FB102EA}.Release|x64.ActiveCfg = Release|x86
+		{044761D8-CD9D-4FD1-B82C-27F96FB102EA}.Release|x86.ActiveCfg = Release|x86
+		{044761D8-CD9D-4FD1-B82C-27F96FB102EA}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
