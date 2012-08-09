@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Reflection;
+using System.Diagnostics;
 
 namespace FrameworkChecker {
     
@@ -12,7 +13,7 @@ namespace FrameworkChecker {
                 Console.WriteLine("  [dllpath]   - path to the DLL library to check framework version");
                 return;
             }
-
+			
             Assembly a = Assembly.ReflectionOnlyLoadFrom(args[0]);
             Console.WriteLine(a.ImageRuntimeVersion);
         }
