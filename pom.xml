@@ -2,15 +2,24 @@
 	
 	<modelVersion>4.0.0</modelVersion>
 	
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>7</version>
+	</parent>
+	
 	<groupId>com.github.sarxos</groupId>
 	<artifactId>dotnet-dll-injector</artifactId>
 	<version>0.1</version>
-	<packaging>netpack</packaging>
+	<packaging>jar</packaging>
 	
 	<name>Managed .NET DLL Injector</name>
+	<url>https://github.com/sarxos/${project.artifactId}</url>
 	<description>Utility allowing you to inject managed DLL into .NET process.</description>
+	<inceptionYear>2012</inceptionYear>
 	
 	<properties>
+		<visual.studio.solution>dotnet-dll-injector.sln</visual.studio.solution>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<dotnet.tool.version>2.0</dotnet.tool.version>
 		<sonar.language>cs</sonar.language>
@@ -18,64 +27,171 @@
 		<fasm.target.path>${project.build.directory}/bootstraps</fasm.target.path>
 	</properties>
 
+	<organization>
+		<name>Bartosz Firyn (SarXos)</name>
+		<url>https://github.com/sarxos</url>
+	</organization>
+
+	<licenses>
+		<license>
+			<name>MIT License</name>
+			<url>https://raw.github.com/sarxos/${project.artifactId}/master/LICENSE.txt</url>
+			<distribution>repo,manual</distribution>
+		</license>
+	</licenses>
+
 	<distributionManagement>
 		<repository>
-			<id>sarxos-ftp-repo</id>
-			<url>ftp://ftp.sarxos.pl/maven2</url>
+			<id>${repo-id}</id>
+			<url>${repo-url}</url>
 		</repository>
 	</distributionManagement>
 
-	<repositories>
-		<repository>
-			<id>sarxos-repo</id>
-			<url>http://repo.sarxos.pl/maven2</url>
-		</repository>
-	</repositories>
+	<scm>
+		<connection>scm:git:git@github.com:sarxos/${project.artifactId}.git</connection>
+		<developerConnection>scm:git:git@github.com:sarxos/${project.artifactId}.git</developerConnection>
+		<url>git@github.com:sarxos/${project.artifactId}.git</url>
+	</scm>
+
+	<issueManagement>
+		<system>GitHub Issues Manager</system>
+		<url>https://github.com/sarxos/${project.artifactId}/issues</url>
+	</issueManagement>
+
+	<developers>
+		<developer>
+			<id>fday</id>
+			<name>fday</name>
+			<roles>
+				<role>Founder</role>
+				<role>Developer</role>
+			</roles>
+			<url>https://github.com/fday</url>
+		</developer>
+		<developer>
+			<id>sarxos</id>
+			<name>Bartosz Firyn</name>
+			<email>bartoszfiryn@gmail.com</email>
+			<roles>
+				<role>Developer</role>
+			</roles>
+			<url>http://me.sarxos.pl/</url>
+			<organization>Bartosz Firyn (SarXos)</organization>
+			<organizationUrl>https://github.com/sarxos</organizationUrl>
+			<timezone>+1</timezone>
+		</developer>
+	</developers>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.github.sarxos</groupId>
+			<artifactId>windows-registry-util</artifactId>
+			<version>0.1</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.2</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.0.7</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-lang3</artifactId>
+			<version>3.1</version>
+		</dependency>
+	</dependencies>
+
+	<profiles>
+		<profile>
+			<id>dotnet</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<dotnet.2.0.sdk.directory>C:/WINNT/Microsoft.NET/Framework/v2.0.50727</dotnet.2.0.sdk.directory> 
+				<dotnet.3.5.sdk.directory>C:/WINNT/Microsoft.NET/Framework/v3.5</dotnet.3.5.sdk.directory> 
+				<dotnet.4.0.sdk.directory>C:/WINNT/Microsoft.NET/Framework/v4.0.30319</dotnet.4.0.sdk.directory> 
+			</properties>
+		</profile>
+		<profile>
+			<id>snapshot</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<repo-id>sonatype-nexus-staging</repo-id>
+				<repo-url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</repo-url>
+			</properties>
+		</profile>
+		<profile>
+			<id>release</id>
+			<activation>
+				<property>
+					<name>performRelease</name>
+					<value>true</value>
+				</property>
+			</activation>
+			<properties>
+				<repo-id>sonatype-nexus-staging</repo-id>
+				<repo-url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</repo-url>
+			</properties>
+			<build>
+				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<version>2.1.2</version>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<version>2.8.1</version>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-gpg-plugin</artifactId>
+						<version>1.1</version>
+						<executions>
+							<execution>
+								<id>sign-artifacts</id>
+								<phase>verify</phase>
+								<goals>
+									<goal>sign</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-release-plugin</artifactId>
+						<version>2.2.2</version>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
 
 	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.eclipse.m2e</groupId>
-					<artifactId>lifecycle-mapping</artifactId>
-					<version>1.0.0</version>
-					<configuration>
-						<lifecycleMappingMetadata>
-							<pluginExecutions>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>com.github.sarxos</groupId>
-										<artifactId>fasm-compiler-plugin</artifactId>
-										<versionRange>[0.1,)</versionRange>
-										<goals>
-											<goal>compile</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<execute />
-									</action>
-								</pluginExecution>
-								<pluginExecution>
-									<pluginExecutionFilter>
-										<groupId>org.codehaus.sonar-plugins.dotnet</groupId>
-										<artifactId>maven-dotnet-plugin</artifactId>
-										<versionRange>[1.2,)</versionRange>
-										<goals>
-											<goal>compile</goal>
-											<goal>unpack</goal>
-										</goals>
-									</pluginExecutionFilter>
-									<action>
-										<ignore />
-									</action>
-								</pluginExecution>
-							</pluginExecutions>
-						</lifecycleMappingMetadata>
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-
 		<plugins>
 			<plugin>
 				<groupId>com.github.sarxos</groupId>
@@ -92,6 +208,7 @@
 					<outputDirectory>${fasm.target.path}</outputDirectory>
 				</configuration>
 			</plugin>
+			
 			<plugin>
 				<groupId>org.codehaus.sonar-plugins.dotnet</groupId>
 				<artifactId>maven-dotnet-plugin</artifactId>
@@ -99,21 +216,125 @@
 				<extensions>true</extensions>
 				<executions>
 					<execution>
+						<id>ndllinjector</id>
+						<phase>compile</phase>
 						<goals>
-							<goal>clean</goal>
 							<goal>compile</goal>
-							<goal>msbuild</goal>
 						</goals>
+						<configuration>
+							<projectName>src/main/cs/NDLLInjector/NDLLInjector.csproj</projectName>
+						</configuration>
+					</execution>
+					<execution>
+						<id>x86runner</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<projectName>src/main/cs/X86Runner/X86Runner.csproj</projectName>
+						</configuration>
+					</execution>
+					<execution>
+						<id>test-injectee</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+						<configuration>
+							<projectName>src/main/cs/TestInjectee/TestInjectee.csproj</projectName>
+						</configuration>
 					</execution>
 				</executions>
 				<configuration>
-					<solutionName>dotnet-dll-injector.sln</solutionName>
 					<outputDirectory>${dotnet.target.path}</outputDirectory>
 					<platforms>Mixed Platforms</platforms>
-					<buildConfigurations>Debug</buildConfigurations>
-					<parameters>
-						<parameter>/p:MSBuildToolsPath="${dotnet.2.0.sdk.directory}"</parameter>
-					</parameters>
+					<buildConfigurations>Release</buildConfigurations>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.6</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/classes</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${project.build.directory}/dotnetbin</directory>
+									<includes>
+										<include>injectdll.exe</include>
+										<include>x86runner.exe</include>
+										<include>TestInjectee.dll</include>
+									</includes>
+								</resource>
+								<resource>
+									<directory>${project.build.directory}/bootstraps</directory>
+									<includes>
+										<include>bootstrap32.bin</include>
+										<include>bootstrap64.bin</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.2</version>
+				<executions>
+					<execution>
+						<id>default-jar</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+						<configuration>
+							<archive>
+								<manifestEntries>
+									<Built-By>${project.organization.name}</Built-By>
+								</manifestEntries>
+							</archive>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>2.5.1</version>
+				<executions>
+					<execution>
+						<id>copy-libs</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>copy-dependencies</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${project.build.directory}/libs</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Built-By>${project.organization.name}</Built-By>
+						</manifestEntries>
+					</archive>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -122,7 +343,7 @@
 				<version>2.3</version>
 				<configuration>
 					<descriptors>
-						<descriptor>src/main/assembly/distribution.xml</descriptor>
+						<descriptor>src/etc/assembly/distribution.xml</descriptor>
 					</descriptors>
 				</configuration>
 				<executions>
@@ -155,6 +376,88 @@
 				</configuration>
 			</plugin>
 		</plugins>
+
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>com.github.sarxos</groupId>
+										<artifactId>fasm-compiler-plugin</artifactId>
+										<versionRange>[0.1,)</versionRange>
+										<goals>
+											<goal>compile</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<execute />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.sonar-plugins.dotnet</groupId>
+										<artifactId>maven-dotnet-plugin</artifactId>
+										<versionRange>[1.2,)</versionRange>
+										<goals>
+											<goal>unpack</goal>
+											<goal>clean</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.sonar-plugins.dotnet</groupId>
+										<artifactId>maven-dotnet-plugin</artifactId>
+										<versionRange>[1.2,)</versionRange>
+										<goals>
+											<goal>compile</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<execute />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>com.github.danielflower.mavenplugins</groupId>
+										<artifactId>maven-gitlog-plugin</artifactId>
+										<versionRange>[1.4.11,)</versionRange>
+										<goals>
+											<goal>generate</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.apache.maven.plugins</groupId>
+										<artifactId>maven-dependency-plugin</artifactId>
+										<versionRange>[2.5.1,)</versionRange>
+										<goals>
+											<goal>copy-dependencies</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 
 		<extensions>
 			<extension>

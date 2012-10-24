@@ -26,19 +26,17 @@
 			</includes>
 		</fileSet>
 		<fileSet>
-			<directory>${dotnet.target.path}</directory>
+			<directory>${project.build.directory}</directory>
 			<outputDirectory>/</outputDirectory>
 			<includes>
-				<include>x86runner.exe</include>
-				<include>injectdll.exe</include>
-				<include>frmvchk.exe</include>
+				<include>${project.artifactId}-${project.version}.jar</include>
 			</includes>
 		</fileSet>
 		<fileSet>
-			<directory>${fasm.target.path}</directory>
-			<outputDirectory>/</outputDirectory>
+			<directory>${project.build.directory}/libs</directory>
+			<outputDirectory>/libs</outputDirectory>
 			<includes>
-				<include>*.bin</include>
+				<include>**</include>
 			</includes>
 		</fileSet>
 	</fileSets>

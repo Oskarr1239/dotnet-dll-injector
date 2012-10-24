@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("FrameworkChecker")]
-[assembly: AssemblyDescription("Check framework version embedded in managed DLL")]
+[assembly: AssemblyTitle("ClassLibrary1")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Druzgocące Krasnale z Elbonii")]
-[assembly: AssemblyProduct("FrameworkChecker")]
-[assembly: AssemblyCopyright("Copyright © Druzgocące Krasnale z Elbonii 2012")]
+[assembly: AssemblyCompany("ALCATEL-LUCENT")]
+[assembly: AssemblyProduct("ClassLibrary1")]
+[assembly: AssemblyCopyright("Copyright © ALCATEL-LUCENT 2012")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("0df766b5-867d-4ded-bafa-322cff5b53ab")]
+[assembly: Guid("3c24f75b-cdb9-4739-b878-7075612ea988")]
 
 // Version information for an assembly consists of the following four values:
 //
