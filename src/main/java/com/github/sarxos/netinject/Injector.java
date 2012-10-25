@@ -6,24 +6,33 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.zip.ZipException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 public class Injector {
-
-	private static Injector instance = new Injector();
 
 	private static final String X64_BOOTSTRAP_BIN = "bootstrap64.bin";
 	private static final String X32_BOOTSTRAP_BIN = "bootstrap32.bin";
 	private static final String INJECTDLL_EXE = "injectdll.exe";
 	private static final String X86_RUNNER_EXE = "x86runner.exe";
-	private static final String TESTINJECTEE_EXE = "TestInjectee.dll";
+	private static final String TESTINJECTEE_20_EXE = "test20.dll";
+
+	private static final Logger LOG = LoggerFactory.getLogger(Injector.class);
+
+	private static Injector instance = new Injector();
 
 	private File x64bootstrapBin = null;
 	private File x32bootstrapBin = null;
 	private File injectdllExe = null;
 	private File x86runnerExe = null;
 	private File testinjecteeDll = null;
+
+	private boolean initialized = false;
 
 	private File getFile(String name) {
 		try {
@@ -37,18 +46,11 @@ public class Injector {
 		}
 	}
 
-	public static Injector getInstance() {
-		return instance;
-	}
+	private void initialize() {
 
-	public boolean test(int pid) {
-		if (testinjecteeDll == null) {
-			testinjecteeDll = getFile(TESTINJECTEE_EXE);
+		if (initialized) {
+			return;
 		}
-		return inject(pid, testinjecteeDll, "Test.Program.Main");
-	}
-
-	public boolean inject(int pid, File dll, String signature) {
 
 		if (injectdllExe == null) {
 			injectdllExe = getFile(INJECTDLL_EXE);
@@ -62,23 +64,44 @@ public class Injector {
 		if (x86runnerExe == null) {
 			x86runnerExe = getFile(X86_RUNNER_EXE);
 		}
+		if (testinjecteeDll == null) {
+			testinjecteeDll = getFile(TESTINJECTEE_20_EXE);
+		}
 
-		// @formatter:off
-		String[] command = new String[] {
-			injectdllExe.getAbsolutePath(),
-			"--proc-id=" + pid,
-			"--dll-path=" + dll.getAbsolutePath(),
-			"--signature=" + signature,
-			"--x86-runner-path=" + x86runnerExe.getAbsolutePath(),
-			"--x64-bootstrap-path=" + x64bootstrapBin.getAbsolutePath(),
-			"--x32-bootstrap-path=" + x32bootstrapBin.getAbsolutePath(),
-			"--verbose"
-		};
-		// @formatter:on
+		initialized = true;
+	}
+
+	public static Injector getInstance() {
+		return instance;
+	}
+
+	public boolean test(int pid) {
+
+		initialize();
+
+		return inject(pid, testinjecteeDll, "Test.Program.Main");
+	}
+
+	public boolean inject(int pid, File dll, String signature) {
+
+		initialize();
+
+		List<String> command = new ArrayList<String>();
+		command.add(injectdllExe.getAbsolutePath());
+		command.add(String.format("--proc-id=%s", pid));
+		command.add(String.format("--dll-path=%s", dll.getAbsolutePath()));
+		command.add(String.format("--signature=%s", signature));
+		command.add(String.format("--x86-runner-path=%s", x86runnerExe.getAbsolutePath()));
+		command.add(String.format("--x64-bootstrap-path=%s", x64bootstrapBin.getAbsolutePath()));
+		command.add(String.format("--x32-bootstrap-path=%s", x32bootstrapBin.getAbsolutePath()));
+
+		if (LOG.isDebugEnabled()) {
+			command.add("--verbose");
+		}
 
 		Process process = null;
 		try {
-			process = Runtime.getRuntime().exec(command);
+			process = Runtime.getRuntime().exec(command.toArray(new String[command.size()]));
 			process.getOutputStream().close();
 		} catch (IOException e) {
 			throw new InjectorRuntimeException(e);
@@ -91,7 +114,7 @@ public class Injector {
 		String line = null;
 		try {
 			while ((line = br.readLine()) != null) {
-				System.out.println(line);
+				LOG.info(String.format("NATIVE: %s", line));
 			}
 		} catch (IOException e) {
 			throw new InjectorRuntimeException(e);

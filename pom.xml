@@ -15,16 +15,16 @@
 	
 	<name>Managed .NET DLL Injector</name>
 	<url>https://github.com/sarxos/${project.artifactId}</url>
-	<description>Utility allowing you to inject managed DLL into .NET process.</description>
+	<description>Utility allowing you to inject managed DLL into any .NET process.</description>
 	<inceptionYear>2012</inceptionYear>
 	
 	<properties>
-		<visual.studio.solution>dotnet-dll-injector.sln</visual.studio.solution>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<dotnet.tool.version>2.0</dotnet.tool.version>
-		<sonar.language>cs</sonar.language>
 		<dotnet.target.path>${project.build.directory}/dotnetbin</dotnet.target.path>
 		<fasm.target.path>${project.build.directory}/bootstraps</fasm.target.path>
+		<dotnet.2.0.sdk.directory>${env.WINDIR}/Microsoft.NET/Framework/v2.0.50727</dotnet.2.0.sdk.directory> 
+		<dotnet.3.5.sdk.directory>${env.WINDIR}/Microsoft.NET/Framework/v3.5</dotnet.3.5.sdk.directory> 
+		<dotnet.4.0.sdk.directory>${env.WINDIR}/Microsoft.NET/Framework/v4.0.30319</dotnet.4.0.sdk.directory> 
 	</properties>
 
 	<organization>
@@ -106,17 +106,6 @@
 	</dependencies>
 
 	<profiles>
-		<profile>
-			<id>dotnet</id>
-			<activation>
-				<activeByDefault>true</activeByDefault>
-			</activation>
-			<properties>
-				<dotnet.2.0.sdk.directory>C:/WINNT/Microsoft.NET/Framework/v2.0.50727</dotnet.2.0.sdk.directory> 
-				<dotnet.3.5.sdk.directory>C:/WINNT/Microsoft.NET/Framework/v3.5</dotnet.3.5.sdk.directory> 
-				<dotnet.4.0.sdk.directory>C:/WINNT/Microsoft.NET/Framework/v4.0.30319</dotnet.4.0.sdk.directory> 
-			</properties>
-		</profile>
 		<profile>
 			<id>snapshot</id>
 			<activation>
@@ -208,7 +197,6 @@
 					<outputDirectory>${fasm.target.path}</outputDirectory>
 				</configuration>
 			</plugin>
-			
 			<plugin>
 				<groupId>org.codehaus.sonar-plugins.dotnet</groupId>
 				<artifactId>maven-dotnet-plugin</artifactId>
@@ -242,7 +230,7 @@
 							<goal>compile</goal>
 						</goals>
 						<configuration>
-							<projectName>src/main/cs/TestInjectee/TestInjectee.csproj</projectName>
+							<projectName>src/main/cs/TestInjectee20/TestInjectee.csproj</projectName>
 						</configuration>
 					</execution>
 				</executions>
@@ -250,6 +238,7 @@
 					<outputDirectory>${dotnet.target.path}</outputDirectory>
 					<platforms>Mixed Platforms</platforms>
 					<buildConfigurations>Release</buildConfigurations>
+					<toolVersion>2.0</toolVersion>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -267,15 +256,15 @@
 							<outputDirectory>${project.build.directory}/classes</outputDirectory>
 							<resources>
 								<resource>
-									<directory>${project.build.directory}/dotnetbin</directory>
+									<directory>${dotnet.target.path}</directory>
 									<includes>
 										<include>injectdll.exe</include>
 										<include>x86runner.exe</include>
-										<include>TestInjectee.dll</include>
+										<include>test20.dll</include>
 									</includes>
 								</resource>
 								<resource>
-									<directory>${project.build.directory}/bootstraps</directory>
+									<directory>${fasm.target.path}</directory>
 									<includes>
 										<include>bootstrap32.bin</include>
 										<include>bootstrap64.bin</include>
@@ -286,7 +275,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>

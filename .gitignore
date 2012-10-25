@@ -1,8 +1,4 @@
 .settings
 target
-*.suo
-UpgradeLog.xml
-_UpgradeReport_Files
-Backup
-src/main/cs/TestInjectee/bin
-src/main/cs/TestInjectee/obj
+src/main/cs/TestInjectee20/bin
+src/main/cs/TestInjectee20/obj

@@ -42,8 +42,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile></DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <PlatformTarget>x86</PlatformTarget>
@@ -54,8 +53,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile></DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>X86Runner.Program</StartupObject>
@@ -78,5 +76,5 @@
     <Content Include="run.ico" />
   </ItemGroup>
   <!-- <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" /> SONARPLUGINS-2133 -->
-  <Import Project="C:/WINNT/Microsoft.NET/Framework/v2.0.50727\Microsoft.CSharp.targets" />
+  <Import Project="C:\WINNT\Microsoft.NET\Framework\v2.0.50727\Microsoft.CSharp.targets" />
 </Project>
