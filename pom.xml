@@ -10,7 +10,7 @@
 	
 	<groupId>com.github.sarxos</groupId>
 	<artifactId>dotnet-dll-injector</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.1</version>
 	<packaging>jar</packaging>
 	
 	<name>.NET Managed DLL Injector</name>
