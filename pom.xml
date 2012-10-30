@@ -109,13 +109,23 @@
 		<profile>
 			<id>snapshot</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<activeByDefault>false</activeByDefault>
 			</activation>
 			<properties>
 				<repo-id>sonatype-nexus-staging</repo-id>
 				<repo-url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</repo-url>
 			</properties>
 		</profile>
+		<profile>
+			<id>deploy-to-sarxos-repo</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<repo-id>sarxos-ftp-repo</repo-id>
+				<repo-url>ftp://repo.sarxos.pl/maven2</repo-url>
+			</properties>
+		</profile>		
 		<profile>
 			<id>release</id>
 			<activation>

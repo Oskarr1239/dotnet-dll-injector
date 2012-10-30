@@ -7,27 +7,46 @@ used interface marked as obsolete from 4.0 and later.
 
 **This project is based on original [NDLLInjector](https://github.com/fday/NDllInjector) by [fday](https://github.com/fday).** 
 
-This project gives you Java JAR files which are wrappers for Fday's .NET files. Therefore you can use is
-to execute Java code which will inject specific DLL into other managed process.
-
-You can download precompiled binaries [here](http://repo.sarxos.pl/maven2/com/github/sarxos/dotnet-dll-injector/0.1/dotnet-dll-injector-0.1-dist.zip). 
-
 ## How To Use
 
-Use this code to inject DLL into any process:
+You can either use dependency manager like Maven, Grendle or Ivy or download precompiled JARs and 
+include them in your project's classpath.
+
+### Maven Users
+
+Maven dependency to be added into the POM:
+
+```xml
+<dependency>
+	<groupId>com.github.sarxos</groupId>
+	<artifactId>dotnet-dll-injector</artifactId>
+	<version>0.1</version>
+</dependency>
+```
+
+### Non-Maven Users
+
+If you are not using Maven (nor any other dependency manager), then you have to download precompiled
+binaries available [here](http://repo.sarxos.pl/maven2/com/github/sarxos/dotnet-dll-injector/0.1/dotnet-dll-injector-0.1-dist.zip) 
+along with all required dependencies (~1MB zip file).
+
+### Code Sample
+
+Use this code to inject DLL into any process (this is **Java** code, not C#):
 
 ```java
-// grab process ID
-int pid = InjectorUtils.getProcessID("some-managed-process.exe");
+public class Main {
 
-// specify which DLL file should be injected (can be relative or absolute path) 
-File dll = new File("path/to/file.dll");
+	public static void main(String[] args) {
 
-// specify signature of method to be run
-String signature = "TestNamespace.Program.Main"; 
+		String procName = "someprocess.exe";             // process name
+		File dll = new File("path/to/some.dll");         // injectee DLL path
+		String signature = "TestNamespace.Program.Main"; // method signature
 
-// inject!
-Injector.getInstance().inject(pid, file, signature);
+		int pid = InjectorUtils.getProcessID(procName);     // get process ID
+		Injector.getInstance().inject(pid, dll, signature); // inject DLL into process
+	}
+}
 ```
 
 The DLL file which you want to inject has to define method with the following signature:
@@ -38,7 +57,7 @@ public static int MethodNameHere(string arg) {
 }
 ```
 
-For example:
+For example (this is **C#** code, not Java):
 
 ```cs
 namespace TestNamespace {
