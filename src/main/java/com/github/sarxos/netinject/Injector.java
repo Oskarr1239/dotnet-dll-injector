@@ -114,7 +114,9 @@ public class Injector {
 		String line = null;
 		try {
 			while ((line = br.readLine()) != null) {
-				LOG.info(String.format("NATIVE: %s", line));
+				if (!line.trim().isEmpty()) {
+					LOG.info(String.format("NATIVE: %s", line));
+				}
 			}
 		} catch (IOException e) {
 			throw new InjectorRuntimeException(e);

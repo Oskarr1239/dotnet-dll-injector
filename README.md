@@ -85,4 +85,4 @@ Because of that you have to edit each ```*.csproj``` file and align this path to
 Download flat assembler ([flatassembler.net](http://flatassembler.net)), extract it wherever you want, and set
 ```FASM_HOME``` environment variable to point this location.
 
-
+This step will become obsolete with upcoming fasm-compiler-plugin 0.2 release, but for now FASM_HOME has to be set. 
