@@ -79,10 +79,10 @@ public class Injector {
 
 		initialize();
 
-		return inject(pid, testinjecteeDll, "Test.Program.Main");
+		return inject(pid, testinjecteeDll, new Signature("Test", "Program", "Main"));
 	}
 
-	public boolean inject(int pid, File dll, String signature) {
+	public boolean inject(int pid, File dll, Signature signature) {
 
 		initialize();
 

@@ -135,8 +135,17 @@ public class InjectorUtils {
 			br.readLine();
 
 			while ((line = br.readLine()) != null) {
+
 				String[] parts = StringUtils.split(line, "\",\"", 3);
-				if (name.equalsIgnoreCase(parts[0])) {
+
+				String pname = null;
+
+				int n = parts[0].lastIndexOf('.');
+				if (n > 0) {
+					pname = parts[0].substring(0, n);
+				}
+
+				if (name.equalsIgnoreCase(parts[0]) || name.equalsIgnoreCase(pname)) {
 					found.add(parts[1]);
 				}
 			}

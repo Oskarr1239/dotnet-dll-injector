@@ -143,6 +143,7 @@ namespace NDLLInjector {
                     argRuntime = findFrameworkVersion(argDllPath, verbose);
                     if (argRuntime == null) {
                         Console.WriteLine("ERROR: Cannot find appropriate runtime version to use");
+                        Environment.Exit(-1);
                     }
                 }
 

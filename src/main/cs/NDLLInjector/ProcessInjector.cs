@@ -5,28 +5,26 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace NDLLInjector
-{
-    public class ProcessInjector
-    {
-        public static bool Is64BitProcess( int pid )
-        {
+namespace NDLLInjector {
+
+    public class ProcessInjector {
+    
+        public static bool Is64BitProcess( int pid ) {
+        
             SYSTEM_INFO si = new SYSTEM_INFO();
             UnsafeFunctions.GetNativeSystemInfo(ref si);
-            if (si.processorArchitecture == 0)
-            {
+            
+            if (si.processorArchitecture == 0) {
                 return false;
             }
 
             IntPtr hProcess = UnsafeFunctions.OpenProcess(ProcessAccessFlags.QueryInformation, false, pid);
-            if (IntPtr.Zero == hProcess)
-            {
+            if (IntPtr.Zero == hProcess) {
                 throw new Exception("Cann't open process.");
             }
             
             bool result;
-            if (!UnsafeFunctions.IsWow64Process(hProcess, out result))
-            {
+            if (!UnsafeFunctions.IsWow64Process(hProcess, out result)) {
                 UnsafeFunctions.CloseHandle(hProcess);
                 throw new InvalidOperationException();
             }
@@ -36,12 +34,11 @@ namespace NDLLInjector
             return !result;
         }
 
-        protected void adjustDebugPriv( int pid )
-        {
+        protected void adjustDebugPriv(int pid) {
+        
             IntPtr hProcess = UnsafeFunctions.OpenProcess(ProcessAccessFlags.All, false, pid);
 
-            if (IntPtr.Zero == hProcess)
-            {
+            if (IntPtr.Zero == hProcess) {
                 throw new Exception("Cann't open process.");
             }
 
@@ -55,18 +52,17 @@ namespace NDLLInjector
             }
 
             IntPtr hToken;
-            if (!UnsafeFunctions.OpenProcessToken(hProcess, TOKEN_ACCESS.TOKEN_ADJUST_PRIVILEGES, out hToken))
-            {
+            if (!UnsafeFunctions.OpenProcessToken(hProcess, TOKEN_ACCESS.TOKEN_ADJUST_PRIVILEGES, out hToken)) {
                 UnsafeFunctions.CloseHandle(hProcess);
                 throw new Exception("Cann't open process token value");                                
             }
 
-            if (!UnsafeFunctions.AdjustTokenPrivileges(hToken, false, ref tp, 0, IntPtr.Zero, IntPtr.Zero))
-            {
+            if (!UnsafeFunctions.AdjustTokenPrivileges(hToken, false, ref tp, 0, IntPtr.Zero, IntPtr.Zero)) {
                 UnsafeFunctions.CloseHandle(hProcess);
                 UnsafeFunctions.CloseHandle(hToken);
                 throw new Exception("Cann't AdjustTokenPrivileges");
             }
+            
             UnsafeFunctions.CloseHandle(hProcess);
             UnsafeFunctions.CloseHandle(hToken);
         }
@@ -96,7 +92,7 @@ namespace NDLLInjector
             return new IntPtr(remoteKernel32.BaseAddress.ToInt64() + (proc.ToInt64() - kernel32.BaseAddress.ToInt64()));
         }
 
-        public int Inject( int pid, string bootstrapPath, string runtimeVersion, string injecteePath, string injecteeClass, string injecteeFunc) {
+        public int Inject(int pid, string bootstrapPath, string runtimeVersion, string injecteePath, string injecteeClass, string injecteeFunc) {
             
             adjustDebugPriv(Process.GetCurrentProcess().Id);
 
@@ -139,21 +135,17 @@ namespace NDLLInjector
 
             IntPtr memory = UnsafeFunctions.VirtualAllocEx(hProcess, IntPtr.Zero, (uint) totalSize, AllocationType.Commit, MemoryProtection.ExecuteReadWrite);
 
-            if (IntPtr.Zero == memory)
-            {
+            if (IntPtr.Zero == memory) {
                 UnsafeFunctions.CloseHandle(hProcess);
                 throw new Exception("Cann't alloc memory.");
             }
 
             int length = param.Count;
 
-            if (is64BitTargetProcess)
-            {
+            if (is64BitTargetProcess) {
                 param.Add(BitConverter.GetBytes(loadLibraryAddress.ToInt64()));
                 param.Add(BitConverter.GetBytes(getProcAddressAddress.ToInt64()));
-            }
-            else
-            {
+            } else {
                 param.Add(BitConverter.GetBytes(loadLibraryAddress.ToInt32()));
                 param.Add(BitConverter.GetBytes(getProcAddressAddress.ToInt32()));
             }
@@ -161,17 +153,16 @@ namespace NDLLInjector
 
             long address = memory.ToInt64() + bootstrap.Length;
 
-            for (int i = 0; i < length; i++)
-            {
+            for (int i = 0; i < length; i++) {
+                
                 byte[] b;
-                if (is64BitTargetProcess)
-                {
+                
+                if (is64BitTargetProcess) {
                     b = BitConverter.GetBytes(address);
-                }
-                else
-                {
+                } else {
                     b = BitConverter.GetBytes((int) address);                    
                 }
+                
                 param.Add(b);
                 address += param[i].Length;
             }
@@ -196,8 +187,7 @@ namespace NDLLInjector
             IntPtr threadId;
             IntPtr thread = UnsafeFunctions.CreateRemoteThread(hProcess, IntPtr.Zero, 0x20000 /*at least 0x10000*/, memory, new IntPtr(address), 0, out threadId);
 
-            if (IntPtr.Zero == thread)
-            {
+            if (IntPtr.Zero == thread) {
                 Debug.WriteLine(Marshal.GetLastWin32Error().ToString("X"));
                 UnsafeFunctions.CloseHandle(hProcess);
                 throw new Exception("Cann't create thread.");
