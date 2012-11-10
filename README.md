@@ -12,6 +12,11 @@ used interface marked as obsolete from 4.0 and later.
 You can either use dependency manager like Maven, Grendle or Ivy or download precompiled JARs and 
 include them in your project's classpath.
 
+The JAR is being releases as OSGi bundle and therefore it can be used in such OSGi
+frameworks like [Equinox](http://www.eclipse.org/equinox/), 
+[Apache Felix](http://felix.apache.org/site/index.html) or 
+[FUSE ESB](http://fusesource.com/products/enterprise-servicemix/). 
+
 ### Maven Users
 
 Maven dependency to be added into the POM:
@@ -20,7 +25,7 @@ Maven dependency to be added into the POM:
 <dependency>
 	<groupId>com.github.sarxos</groupId>
 	<artifactId>dotnet-dll-injector</artifactId>
-	<version>0.2</version>
+	<version>0.2.1</version>
 </dependency>
 ```
 
@@ -39,9 +44,11 @@ public class Main {
 
 	public static void main(String[] args) {
 
-		String procName = "someprocess.exe";             // process name
-		File dll = new File("path/to/some.dll");         // injectee DLL path
-		String signature = "TestNamespace.Program.Main"; // method signature
+		String procName = "someprocess.exe";     // process name
+		File dll = new File("path/to/some.dll"); // injectee DLL path
+		
+		// signature of method to be run after DLL is injected
+		Signature signature = new Signature("TestNamespace", "Program", "Main"); 
 
 		int pid = InjectorUtils.getProcessID(procName);     // get process ID
 		Injector.getInstance().inject(pid, dll, signature); // inject DLL into process
