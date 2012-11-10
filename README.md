@@ -20,7 +20,7 @@ Maven dependency to be added into the POM:
 <dependency>
 	<groupId>com.github.sarxos</groupId>
 	<artifactId>dotnet-dll-injector</artifactId>
-	<version>0.1</version>
+	<version>0.2</version>
 </dependency>
 ```
 
@@ -85,7 +85,7 @@ If everything is configured, then it's enough to run:
 mvn clean install
 ```
 
-Follow the next points to learn how to configure build if your environment has not been configured.
+Follow the next points to understand how to configure build if your environment has not been configured.
 
 
 ### Configure .NET
@@ -98,10 +98,3 @@ Because of that you have to edit each ```*.csproj``` file and align this path to
 ```xml
 <Import Project="C:\WINNT\Microsoft.NET\Framework\v2.0.50727\Microsoft.CSharp.targets" />
 ```
-
-### Configure FASM
-
-Download flat assembler ([flatassembler.net](http://flatassembler.net)), extract it wherever you want, and set
-```FASM_HOME``` environment variable to point this location.
-
-This step will become obsolete with upcoming fasm-compiler-plugin 0.2 release, but for now FASM_HOME has to be set. 

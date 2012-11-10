@@ -5,10 +5,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.zip.ZipException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,18 +32,6 @@ public class Injector {
 
 	private boolean initialized = false;
 
-	private File getFile(String name) {
-		try {
-			return new File(InjectorUtils.resourceToLocalURI(name, Injector.class));
-		} catch (ZipException e) {
-			throw new InjectorRuntimeException(e);
-		} catch (IOException e) {
-			throw new InjectorRuntimeException(e);
-		} catch (URISyntaxException e) {
-			throw new InjectorRuntimeException(e);
-		}
-	}
-
 	private void initialize() {
 
 		if (initialized) {
@@ -53,19 +39,19 @@ public class Injector {
 		}
 
 		if (injectdllExe == null) {
-			injectdllExe = getFile(INJECTDLL_EXE);
+			injectdllExe = InjectorUtils.getFile(INJECTDLL_EXE);
 		}
 		if (x32bootstrapBin == null) {
-			x32bootstrapBin = getFile(X32_BOOTSTRAP_BIN);
+			x32bootstrapBin = InjectorUtils.getFile(X32_BOOTSTRAP_BIN);
 		}
 		if (x64bootstrapBin == null) {
-			x64bootstrapBin = getFile(X64_BOOTSTRAP_BIN);
+			x64bootstrapBin = InjectorUtils.getFile(X64_BOOTSTRAP_BIN);
 		}
 		if (x86runnerExe == null) {
-			x86runnerExe = getFile(X86_RUNNER_EXE);
+			x86runnerExe = InjectorUtils.getFile(X86_RUNNER_EXE);
 		}
 		if (testinjecteeDll == null) {
-			testinjecteeDll = getFile(TESTINJECTEE_20_EXE);
+			testinjecteeDll = InjectorUtils.getFile(TESTINJECTEE_20_EXE);
 		}
 
 		initialized = true;

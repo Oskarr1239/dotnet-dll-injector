@@ -1,4 +1,4 @@
-package com.github.sarxos.netinject;
+package com.github.sarxos.netinject.sandbox;
 
 import java.io.File;
 import java.io.FilenameFilter;

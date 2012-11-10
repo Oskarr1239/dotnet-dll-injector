@@ -11,7 +11,7 @@
 	<groupId>com.github.sarxos</groupId>
 	<artifactId>dotnet-dll-injector</artifactId>
 	<version>0.2-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<packaging>bundle</packaging>
 	
 	<name>.NET Managed DLL Injector</name>
 	<url>https://github.com/sarxos/${project.artifactId}</url>
@@ -195,7 +195,7 @@
 			<plugin>
 				<groupId>com.github.sarxos</groupId>
 				<artifactId>fasm-compiler-plugin</artifactId>
-				<version>0.2-SNAPSHOT</version>
+				<version>0.2</version>
 				<executions>
 					<execution>
 						<goals>
@@ -286,25 +286,31 @@
 				</executions>
 			</plugin>
 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.3.2</version>
-				<executions>
-					<execution>
-						<id>default-jar</id>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-						<configuration>
-							<archive>
-								<manifestEntries>
-									<Built-By>${project.organization.name}</Built-By>
-								</manifestEntries>
-							</archive>
-						</configuration>
-					</execution>
-				</executions>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Build-By>${project.organization.name}</Build-By>
+						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Name>${project.name}</Bundle-Name>
+						<Bundle-Version>${project.version}</Bundle-Version>
+						<Import-Package> 
+							*,
+						</Import-Package>
+						<Export-Package>
+							com.github.sarxos.netinject,
+						</Export-Package>
+						<Include-Resource>
+							{maven-resources},
+							target/classes/bootstrap32.bin,
+							target/classes/bootstrap64.bin,
+							target/classes/injectdll.exe,
+							target/classes/x86runner.exe,
+							target/classes/test20.dll,
+						</Include-Resource>
+					</instructions>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

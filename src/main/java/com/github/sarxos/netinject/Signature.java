@@ -13,6 +13,18 @@ public class Signature {
 		this.method = method;
 	}
 
+	public String getNamespace() {
+		return namespace;
+	}
+
+	public String getClazz() {
+		return clazz;
+	}
+
+	public String getMethod() {
+		return method;
+	}
+
 	@Override
 	public String toString() {
 		return new StringBuilder().append(namespace).append('.').append(clazz).append('.').append(method).toString();

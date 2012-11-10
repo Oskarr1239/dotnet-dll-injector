@@ -32,6 +32,18 @@ public class InjectorUtils {
 
 	private static final Logger LOG = LoggerFactory.getLogger(InjectorUtils.class);
 
+	public static final File getFile(String name) {
+		try {
+			return new File(InjectorUtils.resourceToLocalURI(name, InjectorUtils.class));
+		} catch (ZipException e) {
+			throw new InjectorRuntimeException(e);
+		} catch (IOException e) {
+			throw new InjectorRuntimeException(e);
+		} catch (URISyntaxException e) {
+			throw new InjectorRuntimeException(e);
+		}
+	}
+
 	public static URI resourceToLocalURI(String resource, Class<?> ctx) throws ZipException, IOException, URISyntaxException {
 
 		ProtectionDomain domain = ctx.getProtectionDomain();
