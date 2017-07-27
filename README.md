@@ -1,9 +1,7 @@
 dotnet-dll-injector
 ============
 
-Tool for injecting managed .NET DLL libraries into native process (or not native with some limitations). 
-Support both x86 and x64. Tested on v2.0.50727 and v4.0.30319 runtimes. For loading runtime was 
-used interface marked as obsolete from 4.0 and later.
+This is a tool which can be used for injecting managed .NET DLL libraries into native process (or, with some limitations, into non-native process). Supports both x86 and x64 architectures. It was tested on v2.0.50727 and v4.0.30319 .NET runtimes. Please note that interface used for runtime loading is marked as obsolete and therefore it may stop working some day.
 
 **This project is based on original [NDLLInjector](https://github.com/fday/NDllInjector) by [fday](https://github.com/fday).** 
 
@@ -56,7 +54,7 @@ public class Main {
 }
 ```
 
-The DLL file which you want to inject has to define method with the following signature:
+The DLL file which you want to inject has to define method with the following signature (this is **C#** code, not Java):
 
 ```cs
 public static int MethodNameHere(string arg) {
